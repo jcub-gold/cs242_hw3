@@ -1,0 +1,5 @@
+def cons: INT -> ((INT -> INT -> INT) -> INT -> INT) -> (INT -> INT -> INT) -> INT -> INT
+def nil: (INT -> INT -> INT) -> INT -> INT
+def sum: ((INT -> INT -> INT) -> INT -> INT) -> INT
+def ls: (INT -> INT -> INT) -> INT -> INT
+def result: INT

@@ -1,0 +1,4 @@
+INT == a1;
+a2 == INT;
+a3 == a4;
+SATURATE;

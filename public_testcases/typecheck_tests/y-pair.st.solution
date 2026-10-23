@@ -1,0 +1,5 @@
+def pair: INT -> INT -> (INT -> INT -> INT) -> INT
+def fst: ((INT -> INT -> INT) -> INT) -> INT
+def snd: ((INT -> INT -> INT) -> INT) -> INT
+def p: (INT -> INT -> INT) -> INT
+def q: INT

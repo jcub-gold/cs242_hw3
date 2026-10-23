@@ -1,0 +1,2 @@
+x == INT -> x;
+CHECK_SAT;

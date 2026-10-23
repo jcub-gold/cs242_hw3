@@ -1,0 +1,24 @@
+start: constraints commands
+
+constraints: (constraint ";")*
+commands: (command ";")*
+
+command: "SATURATE" -> saturate_cmd
+       | "CANONICALIZE" expr -> canonicalize_cmd
+       | "CHECK_SAT" -> check_sat_cmd
+
+constraint: expr "==" expr
+expr: sexpr ("->" expr)*
+?sexpr: "(" expr ")"
+      | "INT"     -> inttp
+      | "int"     -> inttp
+      | IDENT
+
+LETTER: /[_a-z]/
+DIGIT : /[0-9]/
+IDENT: LETTER (LETTER|DIGIT)*
+
+%ignore SPACE
+%ignore COMMENT
+SPACE  : /[ \t\f\r\n]/+
+COMMENT: /#[^\n]*/

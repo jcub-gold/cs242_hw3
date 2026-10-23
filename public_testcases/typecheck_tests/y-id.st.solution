@@ -1,0 +1,2 @@
+def id: INT -> INT
+def _: INT

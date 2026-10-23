@@ -1,0 +1,3 @@
+a1 == INT;
+a2 == a1;
+CHECK_SAT;

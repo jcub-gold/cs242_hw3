@@ -1,0 +1,2 @@
+a1 == INT;
+CANONICALIZE a1;

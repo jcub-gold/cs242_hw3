@@ -1,0 +1,2 @@
+INT == x -> y;
+CHECK_SAT;
