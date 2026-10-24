@@ -59,7 +59,7 @@ def _apply_symmetry(symmetry_candidates, saturated_constraints):
 
 def _apply_transitivity(tansitivity_candidates, saturated_constraints):
     for i in range(len(tansitivity_candidates)):
-        for j in range(i + 1, len(tansitivity_candidates)):
+        for j in range(i, len(tansitivity_candidates)):
             contraint_i, constraint_j = tansitivity_candidates[i], tansitivity_candidates[j]
             if contraint_i.l == constraint_j.l:
                 saturated_constraints.add(Constraint(contraint_i.r, constraint_j.r))
