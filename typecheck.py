@@ -12,6 +12,12 @@ def log(*args) -> None:
     """
     print(*args, file=sys.stderr, flush=True)
 
+
+
+"""
+saturate_constraints:
+Applies the constraint rules until no new constraints are added.
+"""
 def saturate_constraints(constraints: FrozenSet[Constraint]) -> FrozenSet[Constraint]:
     saturated_constraints = set(constraints)
     old_size = 0
@@ -36,7 +42,10 @@ def saturate_constraints(constraints: FrozenSet[Constraint]) -> FrozenSet[Constr
     return frozenset(saturated_constraints)
 
 
-
+"""
+canonicalize:
+Replaces type variables with their canonical types.
+"""
 def canonicalize(X: FrozenSet[Type], S: FrozenSet[Constraint], t: Type) -> Type:
     if isinstance(t, IntTp):
         return t
@@ -58,12 +67,24 @@ def canonicalize(X: FrozenSet[Type], S: FrozenSet[Constraint], t: Type) -> Type:
             return canonicalize(X_new, S, B)        
     return t
 
+"""
+check_sat:
+Checks whether the constraints contain an invalid type equality.
+"""
 def check_sat(S: FrozenSet[Constraint]) -> None:
     for constraint in S:
         l_canonicalized, r_canonicalized = canonicalize(frozenset(), S, constraint.l), canonicalize(frozenset(), S, constraint.r)
         if (isinstance(l_canonicalized, FuncTp) and isinstance(r_canonicalized, IntTp)) or (isinstance(r_canonicalized, FuncTp) and isinstance(l_canonicalized, IntTp)):
             raise TypecheckingError("Invalid form (FuncTp equal to IntTp)...")
 
+
+
+
+
+"""
+generate_constraints_for_expr:
+Generates a type and constraints for expression e using assumptions A.
+"""
 def generate_constraints_for_expr(A: Mapping[Var, Type], e: Expr) -> Tuple[Type, FrozenSet[Constraint]]:
     global COUNT
     
@@ -94,6 +115,10 @@ def generate_constraints_for_expr(A: Mapping[Var, Type], e: Expr) -> Tuple[Type,
         constraints = frozenset(constraints)
         return (beta, constraints)
 
+"""
+generate_constraints_for_program:
+Generates types and constraints for all definitions in prog.
+"""
 def generate_constraints_for_program(prog: Prog, A: Mapping[Var, Type]) -> Tuple[Mapping[Var, Type], FrozenSet[Constraint]]:
     A_new, constraints = dict(A), set()
     defns_list = get_defns_list(prog)
@@ -105,7 +130,10 @@ def generate_constraints_for_program(prog: Prog, A: Mapping[Var, Type]) -> Tuple
     return (A_new, frozenset(constraints))
 
 
-
+"""
+typecheck:
+Infers and returns the types of the definitions in prog.
+"""
 def typecheck(prog: Prog) -> Dict[Var, Type]:
     A, constraints = generate_constraints_for_program(prog, {})
     S = saturate_constraints(constraints)
