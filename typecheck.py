@@ -2,6 +2,8 @@ from src.lam import *
 from typing import FrozenSet, Mapping, Tuple, Dict
 import sys
 
+COUNT = 0
+
 def log(*args) -> None:
     """
     The grader for this assignment will ignore stderr when running your code, 
@@ -63,14 +65,54 @@ def check_sat(S: FrozenSet[Constraint]) -> None:
             raise TypecheckingError("Invalid form (FuncTp equal to IntTp)...")
 
 def generate_constraints_for_expr(A: Mapping[Var, Type], e: Expr) -> Tuple[Type, FrozenSet[Constraint]]:
-    raise NotImplementedError()
+    global COUNT
+    
+    if e in CONSTS:
+        return (CONSTS[e], frozenset())
+    if isinstance(e, IntConst):
+        return (IntTp, frozenset())
+    if isinstance(e, Var):
+        return (A[e], frozenset())
+    if isinstance(e, Lam):
+        alpha = TpVar(f"a{COUNT}")
+        COUNT += 1
+    
+        A_new = dict(A)
+        A_new[e.s] = alpha
+        T, constraints = generate_constraints_for_expr(A_new, e.e)
+        return (FuncTp(alpha, T), constraints)
+    if isinstance(e, App):
+        beta = TpVar(f"a{COUNT}")
+        COUNT += 1
+
+        T, constraints = generate_constraints_for_expr(A, e.e1)
+        T_prime, constraints_prime = generate_constraints_for_expr(A, e.e2)
+
+        constraints = set(constraints) | set(constraints_prime) | {Constraint(T, FuncTp(T_prime, beta))}
+        constraints = frozenset(constraints)
+        return (beta, constraints)
 
 def generate_constraints_for_program(prog: Prog, A: Mapping[Var, Type]) -> Tuple[Mapping[Var, Type], FrozenSet[Constraint]]:
-    raise NotImplementedError()
+    A_new, constraints = dict(A), set()
+    defns_list = get_defns_list(prog)
+    for defn in defns_list:
+        T, frozen_constraints = generate_constraints_for_expr(A_new, defn.e)
+        A_new[defn.s] = T
+        constraints |= set(frozen_constraints)
+
+    return (A_new, frozenset(constraints))
+
+
 
 def typecheck(prog: Prog) -> Dict[Var, Type]:
-    raise NotImplementedError()
+    A, constraints = generate_constraints_for_program(prog, {})
+    S = saturate_constraints(constraints)
+    check_sat(S)
+    A_canonicalized = {}
+    for var, t in A.items():
+        A_canonicalized[var] = canonicalize({}, S, t)
 
+    return A_canonicalized
 
 
 
@@ -98,9 +140,9 @@ def _apply_symmetry(symmetry_candidates, saturated_constraints):
 def _apply_transitivity(tansitivity_candidates, saturated_constraints):
     for i in range(len(tansitivity_candidates)):
         for j in range(i, len(tansitivity_candidates)):
-            contraint_i, constraint_j = tansitivity_candidates[i], tansitivity_candidates[j]
-            if contraint_i.l == constraint_j.l:
-                saturated_constraints.add(Constraint(contraint_i.r, constraint_j.r))
+            constraint_i, constraint_j = tansitivity_candidates[i], tansitivity_candidates[j]
+            if constraint_i.l == constraint_j.l:
+                saturated_constraints.add(Constraint(constraint_i.r, constraint_j.r))
 
 def _apply_struct(struct_candidates, saturated_constraints):
     for constraint in struct_candidates:
