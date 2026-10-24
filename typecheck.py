@@ -72,6 +72,8 @@ def generate_constraints_for_expr(A: Mapping[Var, Type], e: Expr) -> Tuple[Type,
     if isinstance(e, IntConst):
         return (IntTp(), frozenset())
     if isinstance(e, Var):
+        if e not in A:
+            raise TypecheckingError(f"Undefined variable: {e}")
         return (A[e], frozenset())
     if isinstance(e, Lam):
         alpha = TpVar(f"a{COUNT}")
