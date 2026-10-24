@@ -135,6 +135,8 @@ typecheck:
 Infers and returns the types of the definitions in prog.
 """
 def typecheck(prog: Prog) -> Dict[Var, Type]:
+    global COUNT
+    COUNT = 0
     A, constraints = generate_constraints_for_program(prog, {})
     S = saturate_constraints(constraints)
     check_sat(S)
