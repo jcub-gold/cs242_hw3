@@ -5,8 +5,8 @@ def _1 = inc _0;
 def _2 = inc _1;
 
 def sum = \n. n (+ 1) 0; # Should return a church encoding of the sum of n and m
-def value = <fill in>; # Should take a church encoded number and produce a regular int.
-def is_div = <fill in>; # Should take two ints x y and produce 1 if x is divisible by y, 0 otherwise
+def value = 0; # Should take a church encoded number and produce a regular int.
+def is_div = 0; # Should take two ints x y and produce 1 if x is divisible by y, 0 otherwise
 
 def v1 = value _1;
 def v2 = value _2;
