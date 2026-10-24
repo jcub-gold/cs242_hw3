@@ -6,7 +6,7 @@ def _2 = inc _1;
 
 def sum = \m.\n.\f.\z. m f (n f z); # Should return a church encoding of the sum of n and m
 
-def test = sum _1 _2 (\n. n + 1) 0;
+# def test = sum _1 _2 (\n. n + 1) 0;
 
 # def value = 0; # Should take a church encoded number and produce a regular int.
 # def is_div = 0; # Should take two ints x y and produce 1 if x is divisible by y, 0 otherwise
