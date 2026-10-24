@@ -1,0 +1,6 @@
+az -> az = (ax -> ay -> ax) -> b;
+az = ax -> ay -> ax;
+az = b;
+b = ax -> ay -> ax;
+b = az;
+CANONICALIZE b;
