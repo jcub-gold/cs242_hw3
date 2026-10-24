@@ -36,7 +36,24 @@ def saturate_constraints(constraints: FrozenSet[Constraint]) -> FrozenSet[Constr
 
 
 def canonicalize(X: FrozenSet[Type], S: FrozenSet[Constraint], t: Type) -> Type:
-    raise NotImplementedError()
+    if isinstance(t, IntTp):
+        return t
+    if t in X:
+        raise TypecheckingError("Cycle discovered during canonicalization...")
+
+    if isinstance(t, FuncTp):
+        X_new = frozenset(set(X).add(t))
+        return FuncTp(canonicalize(X_new, S, t.a), canonicalize(X_new, S, t.b))
+
+    if isinstance(t, TpVar):
+        X_new = frozenset(set(X).add(t))
+        T = _find_T(t, S)
+        if T is not None:
+            return canonicalize(X_new, S, T)
+        B = _find_B(t, S)
+        if B is not None:
+            return canonicalize(X_new, S, T)        
+    return t
 
 def check_sat(S: FrozenSet[Constraint]) -> None:
     raise NotImplementedError()
@@ -52,6 +69,23 @@ def typecheck(prog: Prog) -> Dict[Var, Type]:
 
 
 
+
+def _find_B(alpha, S):
+    possible_Bs = []
+    for constraint in S:
+        if constraint.l == alpha and isinstance(constraint.r, TpVar):
+            possible_Bs.append(constraint.r)
+
+    possible_Bs.sort()
+    if len(possible_Bs) > 0 and possible_Bs[-1] != alpha:
+        return possible_Bs[-1]
+    return None
+
+def _find_T(alpha, S):
+    for constraint in S:
+        if constraint.l == alpha and not isinstance(constraint.r, TpVar):
+            return constraint.r
+    return None
 
 def _apply_symmetry(symmetry_candidates, saturated_constraints):
     for constraint in symmetry_candidates:
