@@ -53,7 +53,7 @@ def canonicalize(X: FrozenSet[Type], S: FrozenSet[Constraint], t: Type) -> Type:
             return canonicalize(X_new, S, T)
         B = _find_B(t, S)
         if B is not None:
-            return canonicalize(X_new, S, T)        
+            return canonicalize(X_new, S, B)        
     return t
 
 def check_sat(S: FrozenSet[Constraint]) -> None:
