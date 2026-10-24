@@ -57,7 +57,10 @@ def canonicalize(X: FrozenSet[Type], S: FrozenSet[Constraint], t: Type) -> Type:
     return t
 
 def check_sat(S: FrozenSet[Constraint]) -> None:
-    raise NotImplementedError()
+    for constraint in S:
+        l_canonicalized, r_canonicalized = canonicalize(frozenset(), S, constraint.l), canonicalize(frozenset(), S, constraint.r)
+        if (isinstance(l_canonicalized, FuncTp) and isinstance(r_canonicalized, IntTp)) or (isinstance(r_canonicalized, FuncTp) and isinstance(l_canonicalized, IntTp)):
+            raise TypecheckingError("Invalid form (FuncTp equal to IntTp)...")
 
 def generate_constraints_for_expr(A: Mapping[Var, Type], e: Expr) -> Tuple[Type, FrozenSet[Constraint]]:
     raise NotImplementedError()
