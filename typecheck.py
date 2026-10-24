@@ -70,7 +70,7 @@ def generate_constraints_for_expr(A: Mapping[Var, Type], e: Expr) -> Tuple[Type,
     if e in CONSTS:
         return (CONSTS[e], frozenset())
     if isinstance(e, IntConst):
-        return (IntTp, frozenset())
+        return (IntTp(), frozenset())
     if isinstance(e, Var):
         return (A[e], frozenset())
     if isinstance(e, Lam):
