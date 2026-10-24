@@ -19,13 +19,13 @@ def saturate_constraints(constraints: FrozenSet[Constraint]) -> FrozenSet[Constr
         symmetry_candidates = []
         tansitivity_candidates = []
         struct_candidates = []
-        for constrint in saturated_constraints:
-            if isinstance(constrint.r, TpVar):
-                symmetry_candidates.append(constrint)
-            if isinstance(constrint.l, TpVar):
-                tansitivity_candidates.append(constrint)
-            if isinstance(constrint.l, FuncTp) and isinstance(constrint.l, FuncTp):
-                struct_candidates.append(constrint)
+        for constraint in saturated_constraints:
+            if isinstance(constraint.r, TpVar):
+                symmetry_candidates.append(constraint)
+            if isinstance(constraint.l, TpVar):
+                tansitivity_candidates.append(constraint)
+            if isinstance(constraint.l, FuncTp) and isinstance(constraint.r, FuncTp):
+                struct_candidates.append(constraint)
 
         _apply_symmetry(symmetry_candidates, saturated_constraints)
         _apply_transitivity(tansitivity_candidates, saturated_constraints)
