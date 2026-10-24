@@ -4,7 +4,7 @@ def _0 = \f.\z. z;
 def _1 = inc _0;
 def _2 = inc _1;
 
-def sum = \m. inc m (+ 1) (\n. inc n (+ 1) 0); # Should return a church encoding of the sum of n and m
+def sum = \m.\n. m inc n; # Should return a church encoding of the sum of n and m
 
 def _3 = sum _1 _2;
 
