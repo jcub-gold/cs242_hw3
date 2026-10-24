@@ -41,12 +41,13 @@ def canonicalize(X: FrozenSet[Type], S: FrozenSet[Constraint], t: Type) -> Type:
     if t in X:
         raise TypecheckingError("Cycle discovered during canonicalization...")
 
+    X_new = set(X)
+    X_new.add(t)
+    X_new = frozenset(X_new)
     if isinstance(t, FuncTp):
-        X_new = frozenset(set(X).add(t))
         return FuncTp(canonicalize(X_new, S, t.a), canonicalize(X_new, S, t.b))
 
     if isinstance(t, TpVar):
-        X_new = frozenset(set(X).add(t))
         T = _find_T(t, S)
         if T is not None:
             return canonicalize(X_new, S, T)
