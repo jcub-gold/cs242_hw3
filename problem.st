@@ -8,7 +8,7 @@ def sum = \m.\n.\f.\z. m f (n f z); # Should return a church encoding of the sum
 
 def test = sum _1 _2 (+ 1) 0;
 
-def value = \n (+ 1) 0; # Should take a church encoded number and produce a regular int.
+def value = \n. n (+ 1) 0; # Should take a church encoded number and produce a regular int.
 # def is_div = 0; # Should take two ints x y and produce 1 if x is divisible by y, 0 otherwise
 
 # def v1 = value _1;
